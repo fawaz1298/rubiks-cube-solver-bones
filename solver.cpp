@@ -3,6 +3,7 @@
 #include<vector>
 #include<unordered_map>
 #include<queue>
+#include<set>
 
 using namespace std;
 
@@ -32,8 +33,11 @@ class rubiks_cube{
         }
         return temp;
     }
+
     unordered_map<string,string> key;
     queue<string> que;
+    set<int> movn;
+
     public:
     /*int read_cube(){
         cout<<"READING CUBE:\n";
@@ -49,7 +53,11 @@ class rubiks_cube{
         if(!(key.find(cube)!=key.end())){
             que.push(cube);
             key[cube]=moves;
-            cout<<cube<<":"<<moves.length()<<"\n";
+            int le=moves.length();
+            if(movn.find(le)==movn.end()){
+                cout<<"started for "<<le<<" number of moves\n";
+                movn.insert(le);
+            }
         }
     }
     void left(string cube , string moves){
@@ -172,10 +180,131 @@ class rubiks_cube{
         checker(cube,moves+'b');
 
     }
+    void lefti(string cube , string moves){
+        char temp1=cube[0],temp2=cube[3];
+        cube[0]=cube[4];
+        cube[3]=cube[7];
+        cube[4]=cube[20];
+        cube[7]=cube[23]; //edges
+        cube[20]=cube[14];
+        cube[23]=cube[13];
+        cube[14]=temp1;
+        cube[13]=temp2;
+
+        char temp=cube[9];
+        cube[9]=cube[10];
+        cube[10]=cube[11]; //face
+        cube[11]=cube[8];
+        cube[8]=temp;
+
+        checker(cube,moves+'L');
+
+    }   
+    void righti(string cube , string moves){
+        char temp1=cube[1],temp2=cube[2];
+        cube[1]=cube[15];
+        cube[2]=cube[12];
+        cube[15]=cube[21];
+        cube[12]=cube[22]; //edges
+        cube[21]=cube[5];
+        cube[22]=cube[6];
+        cube[5]=temp1;
+        cube[6]=temp2;
+
+        char temp=cube[16];
+        cube[16]=cube[17];
+        cube[17]=cube[18]; //face
+        cube[18]=cube[19];
+        cube[19]=temp;
+
+        checker(cube,moves+'R');
+
+    }   
+    void upi(string cube , string moves){
+        char temp1=cube[4],temp2=cube[5];
+        cube[4]=cube[8];
+        cube[5]=cube[9];
+        cube[8]=cube[12];
+        cube[9]=cube[13]; //edges
+        cube[12]=cube[16];
+        cube[13]=cube[17];
+        cube[16]=temp1;
+        cube[17]=temp2;
+
+        char temp=cube[0];
+        cube[0]=cube[1];
+        cube[1]=cube[2]; //face
+        cube[2]=cube[3];
+        cube[3]=temp;
+
+        checker(cube,moves+'U');
+
+    }   
+    void downi(string cube , string moves){
+        char temp1=cube[7],temp2=cube[6];
+        cube[7]=cube[19];
+        cube[6]=cube[18];
+        cube[19]=cube[15];
+        cube[18]=cube[14]; //edges
+        cube[15]=cube[11];
+        cube[14]=cube[10];
+        cube[11]=temp1;
+        cube[10]=temp2;
+
+        char temp=cube[20];
+        cube[20]=cube[21];
+        cube[21]=cube[22]; //face
+        cube[22]=cube[23];
+        cube[23]=temp;
+
+        checker(cube,moves+'D');
+
+    }   
+    void fronti(string cube , string moves){
+        char temp1=cube[3],temp2=cube[2];
+        cube[3]=cube[16];
+        cube[2]=cube[19];
+        cube[16]=cube[21];
+        cube[19]=cube[20]; //edges
+        cube[21]=cube[10];
+        cube[20]=cube[9];
+        cube[10]=temp1;
+        cube[9]=temp2;
+
+        char temp=cube[4];
+        cube[4]=cube[5];
+        cube[5]=cube[6]; //face
+        cube[6]=cube[7];
+        cube[7]=temp;
+
+        checker(cube,moves+'F');
+
+    }   
+    void backi(string cube , string moves){
+        char temp1=cube[0],temp2=cube[1];
+        cube[0]=cube[11];
+        cube[1]=cube[8];
+        cube[11]=cube[22];
+        cube[8]=cube[23]; //edges
+        cube[22]=cube[17];
+        cube[23]=cube[18];
+        cube[17]=temp1;
+        cube[18]=temp2;
+
+        char temp=cube[12];
+        cube[12]=cube[13];
+        cube[13]=cube[14]; //face
+        cube[14]=cube[15];
+        cube[15]=temp;
+
+        checker(cube,moves+'B');
+
+    }
     void bfs(){
         string temp="wwwwggggoooobbbbrrrryyyy";
         key[temp]="";
         que.push(temp);
+        int i=1;
         while (!que.empty()){
             string cube=que.front();
             que.pop();
@@ -186,6 +315,12 @@ class rubiks_cube{
             down(cube,tmoves);
             front(cube,tmoves);
             back(cube,tmoves);
+            lefti(cube,tmoves);
+            righti(cube,tmoves);
+            upi(cube,tmoves);
+            downi(cube,tmoves);
+            fronti(cube,tmoves);
+            backi(cube,tmoves);
         }
         cout<<"bfs complete";
     }
