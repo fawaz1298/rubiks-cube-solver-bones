@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 class rubiks_cube{
     private:
     string w="white"; 
@@ -37,7 +38,7 @@ class rubiks_cube{
     unordered_map<string,string> key;
     queue<string> que;
     set<int> movn;
-
+    long long count=0;
     public:
     /*int read_cube(){
         cout<<"READING CUBE:\n";
@@ -51,16 +52,12 @@ class rubiks_cube{
     }*/
     void checker(string cube,string moves){
         if(!(key.find(cube)!=key.end())){
+            count++;
             que.push(cube);
             key[cube]=moves;
-            int le=moves.length();
-            if(movn.find(le)==movn.end()){
-                cout<<"started for "<<le<<" number of moves\n";
-                movn.insert(le);
-            }
         }
     }
-    void left(string cube , string moves){
+    string left(string cube , string moves){
         char temp1=cube[0],temp2=cube[3];
         cube[0]=cube[14];
         cube[3]=cube[13];
@@ -80,7 +77,7 @@ class rubiks_cube{
         checker(cube,moves+'l');
 
     }   
-    void right(string cube , string moves){
+    string right(string cube , string moves){
         char temp1=cube[1],temp2=cube[2];
         cube[1]=cube[5];
         cube[2]=cube[6];
@@ -300,8 +297,8 @@ class rubiks_cube{
         checker(cube,moves+'B');
 
     }
-    void bfs(){
-        string temp="wwwwggggoooobbbbrrrryyyy";
+    void bfs1(){
+        string temp="wwwwggxgoooxbbxxrrxxyxxx";   //wwwwggxgoooxbbxxrrxxyxxx        wwwwggggoooobbbbrrrryyyy
         key[temp]="";
         que.push(temp);
         int i=1;
@@ -320,15 +317,40 @@ class rubiks_cube{
             upi(cube,tmoves);
             downi(cube,tmoves);
             fronti(cube,tmoves);
-            backi(cube,tmoves);
+            backi(cube,tmoves);     //1632959
         }
-        cout<<"bfs complete";
+        cout<<"bfs 1 complete "<<count<<"\n";
+    }
+
+    void bfs2(){
+        string temp="xwxxxxggxxoobxbbxrrryyyy";   //wwwwggxgoooxbbxxrrxxyxxx        wwwwggggoooobbbbrrrryyyy
+        key[temp]="";
+        que.push(temp);
+        int i=1;
+        while (!que.empty()){
+            string cube=que.front();
+            que.pop();
+            string tmoves=key[cube];
+            left(cube,tmoves);
+            right(cube,tmoves);
+            up(cube,tmoves);
+            down(cube,tmoves);
+            front(cube,tmoves);
+            back(cube,tmoves);
+            lefti(cube,tmoves);
+            righti(cube,tmoves);
+            upi(cube,tmoves);
+            downi(cube,tmoves);
+            fronti(cube,tmoves);
+            backi(cube,tmoves);     //1632959
+        }
+        cout<<"bfs 2 complete "<<count;
     }
 };
 
 int main(){
     rubiks_cube cube;
-    cube.bfs();
-    cout<<"jam";
+    cube.bfs1();
+    cube.bfs2();
     return 0;
 }
