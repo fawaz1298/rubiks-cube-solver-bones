@@ -3,7 +3,7 @@
 #include<vector>
 #include<unordered_map>
 #include<queue>
-#include<set>
+#include<unordered_set>
 
 using namespace std;
 
@@ -20,44 +20,140 @@ class rubiks_cube{
     //faces
 
     const string scan_order = "wygobr";
-    vector<vector<char>> face_maker(string face1,string face2){
-        cout<< face1 <<"Facing top and "<< face2 <<"facing front\n";
-        vector<vector<char>> temp(2,vector<char> (2));
-        for(int i=0;i<2;i++){
-            for(int j=0;j<2;j++){
-                cin>>temp[i][j];
-                temp[i][j]=tolower(temp[i][j]);
-                if(!(temp[i][j]!='w'&&temp[i][j]!='b'&&temp[i][j]!='r'&&temp[i][j]!='g'&&temp[i][j]!='o'&&temp[i][j]!='y')){
-                    return {{'x','x'},{'x','x'}};
-                }
+    string face_maker(){
+        cout<<"Enter states:\n";
+       string temp = "";
+       char t;
+        for(int i=0;i<4;i++){
+            cin>>t;
+            t=tolower(t);
+            temp+=t;
+            if(!(t!='w'||t!='b'||t!='r'||t!='g'||t!='o'||t!='y')){
+                return "xxxx";
             }
         }
         return temp;
     }
 
-    unordered_map<string,string> key;
+    unordered_map<string,int> key;
     queue<string> que;
-    set<int> movn;
+    unordered_set<string> type1={"ygr","gry","ryg","yrb","rby","byr","ybo","boy","oyb"};
+    unordered_set<string> type2={"ygr","gry","ryg","yrb","rby","byr","ybo","boy","oyb"};
     long long count=0;
     public:
-    /*int read_cube(){
+    string read_cube(){
         cout<<"READING CUBE:\n";
-        white = face_maker(w,b);
-        yellow = face_maker(y,g);
-        green = face_maker(g,w);
-        blue = face_maker(b,w);
-        red = face_maker(r,w);
-        orange = face_maker(o,w);
-        return 1;
-    }*/
-    void checker(string cube,string moves){
-        if(!(key.find(cube)!=key.end())){
+        string test;
+        cout<<"front face:\n";
+        test += face_maker();
+        cout<<"do full cube right move face:\n";
+        test += face_maker();
+        cout<<"do full cube up inverse move face:\n";
+        test += face_maker();
+        cout<<"do full cube up inverse move face:\n";
+        test += face_maker();
+        cout<<"do full cube up inverse move face:\n";
+        test += face_maker();
+        cout<<"do full cube right move face:\n";
+        test += face_maker();
+        return test;
+    }
+    string masker1(string test){
+        if(type1.find({test[0],test[8],test[13]})!=type1.end()){
+            test[0]='x';
+            test[8]='x';
+            test[13]='x';
+        }
+        if(type1.find(string({test[1],test[12],test[17]}))!=type1.end()){
+            test[1]='x';
+            test[12]='x';
+            test[17]='x';
+        }
+        if(type1.find(string({test[2],test[16],test[15]}))!=type1.end()){
+            test[2]='x';
+            test[16]='x';
+            test[15]='x';
+        }
+        if(type1.find(string({test[3],test[4],test[9]}))!=type1.end()){
+            test[3]='x';
+            test[4]='x';
+            test[9]='x';
+        }
+        if(type1.find(string({test[20],test[10],test[7]}))!=type1.end()){
+            test[20]='x';
+            test[10]='x';
+            test[7]='x';
+        }
+        if(type1.find(string({test[21],test[6],test[19]}))!=type1.end()){
+            test[21]='x';
+            test[6]='x';
+            test[19]='x';
+        }
+        if(type1.find(string({test[22],test[18],test[15]}))!=type1.end()){
+            test[22]='x';
+            test[18]='x';
+            test[15]='x';
+        }
+        if(type1.find(string({test[23],test[14],test[11]}))!=type1.end()){
+            test[23]='x';
+            test[14]='x';
+            test[11]='x';
+        }
+        return test;
+    }
+    string masker2(string test){
+        if(type2.find({test[0],test[8],test[13]})!=type2.end()){
+            test[0]='x';
+            test[8]='x';
+            test[13]='x';
+        }
+        if(type2.find(string({test[1],test[12],test[17]}))!=type2.end()){
+            test[1]='x';
+            test[12]='x';
+            test[17]='x';
+        }
+        if(type2.find(string({test[2],test[16],test[15]}))!=type2.end()){
+            test[2]='x';
+            test[16]='x';
+            test[15]='x';
+        }
+        if(type2.find(string({test[3],test[4],test[9]}))!=type2.end()){
+            test[3]='x';
+            test[4]='x';
+            test[9]='x';
+        }
+        if(type2.find(string({test[20],test[10],test[7]}))!=type2.end()){
+            test[20]='x';
+            test[10]='x';
+            test[7]='x';
+        }
+        if(type2.find(string({test[21],test[6],test[19]}))!=type2.end()){
+            test[21]='x';
+            test[6]='x';
+            test[19]='x';
+        }
+        if(type2.find(string({test[22],test[18],test[15]}))!=type2.end()){
+            test[22]='x';
+            test[18]='x';
+            test[15]='x';
+        }
+        if(type2.find(string({test[23],test[14],test[11]}))!=type2.end()){
+            test[23]='x';
+            test[14]='x';
+            test[11]='x';
+        }
+        return test;
+    }
+    void checker(vector<string> states,int moves){
+        for(auto cube:states){
+            if(!(key.find(cube)!=key.end())){
             count++;
             que.push(cube);
             key[cube]=moves;
+            }
         }
     }
-    string left(string cube , string moves){
+    string left(string cube ){
         char temp1=cube[0],temp2=cube[3];
         cube[0]=cube[14];
         cube[3]=cube[13];
@@ -74,10 +170,10 @@ class rubiks_cube{
         cube[11]=cube[10];
         cube[10]=temp;
 
-        checker(cube,moves+'l');
+        return cube;
 
     }   
-    string right(string cube , string moves){
+    string right(string cube ){
         char temp1=cube[1],temp2=cube[2];
         cube[1]=cube[5];
         cube[2]=cube[6];
@@ -94,10 +190,10 @@ class rubiks_cube{
         cube[18]=cube[17];
         cube[17]=temp;
 
-        checker(cube,moves+'r');
+        return cube;
 
     }   
-    void up(string cube , string moves){
+    string up(string cube ){
         char temp1=cube[4],temp2=cube[5];
         cube[4]=cube[16];
         cube[5]=cube[17];
@@ -113,11 +209,11 @@ class rubiks_cube{
         cube[3]=cube[2]; //face
         cube[2]=cube[1];
         cube[1]=temp;
-
-        checker(cube,moves+'u');
+        
+        return cube;
 
     }   
-    void down(string cube , string moves){
+    string down(string cube ){
         char temp1=cube[7],temp2=cube[6];
         cube[7]=cube[11];
         cube[6]=cube[10];
@@ -133,11 +229,11 @@ class rubiks_cube{
         cube[23]=cube[22]; //face
         cube[22]=cube[21];
         cube[21]=temp;
-
-        checker(cube,moves+'d');
+        
+        return cube;
 
     }   
-    void front(string cube , string moves){
+    string front(string cube ){
         char temp1=cube[3],temp2=cube[2];
         cube[3]=cube[10];
         cube[2]=cube[9];
@@ -153,11 +249,11 @@ class rubiks_cube{
         cube[7]=cube[6]; //face
         cube[6]=cube[5];
         cube[5]=temp;
-
-        checker(cube,moves+'f');
+        
+        return cube;
 
     }   
-    void back(string cube , string moves){
+    string back(string cube ){
         char temp1=cube[0],temp2=cube[1];
         cube[0]=cube[17];
         cube[1]=cube[18];
@@ -173,11 +269,11 @@ class rubiks_cube{
         cube[15]=cube[14]; //face
         cube[14]=cube[13];
         cube[13]=temp;
-
-        checker(cube,moves+'b');
+        
+        return cube;
 
     }
-    void lefti(string cube , string moves){
+    string lefti(string cube ){
         char temp1=cube[0],temp2=cube[3];
         cube[0]=cube[4];
         cube[3]=cube[7];
@@ -193,11 +289,11 @@ class rubiks_cube{
         cube[10]=cube[11]; //face
         cube[11]=cube[8];
         cube[8]=temp;
-
-        checker(cube,moves+'L');
+        
+        return cube;
 
     }   
-    void righti(string cube , string moves){
+    string righti(string cube ){
         char temp1=cube[1],temp2=cube[2];
         cube[1]=cube[15];
         cube[2]=cube[12];
@@ -213,11 +309,11 @@ class rubiks_cube{
         cube[17]=cube[18]; //face
         cube[18]=cube[19];
         cube[19]=temp;
-
-        checker(cube,moves+'R');
+        
+        return cube;
 
     }   
-    void upi(string cube , string moves){
+    string upi(string cube ){
         char temp1=cube[4],temp2=cube[5];
         cube[4]=cube[8];
         cube[5]=cube[9];
@@ -233,11 +329,11 @@ class rubiks_cube{
         cube[1]=cube[2]; //face
         cube[2]=cube[3];
         cube[3]=temp;
-
-        checker(cube,moves+'U');
+        
+        return cube;
 
     }   
-    void downi(string cube , string moves){
+    string downi(string cube ){
         char temp1=cube[7],temp2=cube[6];
         cube[7]=cube[19];
         cube[6]=cube[18];
@@ -253,11 +349,11 @@ class rubiks_cube{
         cube[21]=cube[22]; //face
         cube[22]=cube[23];
         cube[23]=temp;
-
-        checker(cube,moves+'D');
+        
+        return cube;
 
     }   
-    void fronti(string cube , string moves){
+    string fronti(string cube ){
         char temp1=cube[3],temp2=cube[2];
         cube[3]=cube[16];
         cube[2]=cube[19];
@@ -273,11 +369,11 @@ class rubiks_cube{
         cube[5]=cube[6]; //face
         cube[6]=cube[7];
         cube[7]=temp;
-
-        checker(cube,moves+'F');
+        
+        return cube;
 
     }   
-    void backi(string cube , string moves){
+    string backi(string cube){
         char temp1=cube[0],temp2=cube[1];
         cube[0]=cube[11];
         cube[1]=cube[8];
@@ -293,64 +389,47 @@ class rubiks_cube{
         cube[13]=cube[14]; //face
         cube[14]=cube[15];
         cube[15]=temp;
-
-        checker(cube,moves+'B');
+        
+        return cube;
 
     }
     void bfs1(){
-        string temp="wwwwggxgoooxbbxxrrxxyxxx";   //wwwwggxgoooxbbxxrrxxyxxx        wwwwggggoooobbbbrrrryyyy
-        key[temp]="";
+        string temp = "wwwwggxgoooxbbxxrrxxyxxx";   //wwwwggxgoooxbbxxrrxxyxxx        xwxxxxggxxoobxbbxrrryyyy
+        key[temp] = 0;
+        string temp2 = "xwxxxxggxxoobxbbxrrryyyy";
+        key[temp2] = 0;
         que.push(temp);
-        int i=1;
+        que.push(temp2);
         while (!que.empty()){
             string cube=que.front();
             que.pop();
-            string tmoves=key[cube];
-            left(cube,tmoves);
-            right(cube,tmoves);
-            up(cube,tmoves);
-            down(cube,tmoves);
-            front(cube,tmoves);
-            back(cube,tmoves);
-            lefti(cube,tmoves);
-            righti(cube,tmoves);
-            upi(cube,tmoves);
-            downi(cube,tmoves);
-            fronti(cube,tmoves);
-            backi(cube,tmoves);     //1632959
+            vector<string> tempstates(12,"");
+            tempstates[0] = left(cube);
+            tempstates[1] = right(cube);
+            tempstates[2] = up(cube);
+            tempstates[3] = down(cube);
+            tempstates[4] = front(cube);
+            tempstates[5] = back(cube);
+            tempstates[6] = lefti(cube);
+            tempstates[7] = righti(cube);
+            tempstates[8] = upi(cube);
+            tempstates[9] = downi(cube);
+            tempstates[10] = fronti(cube);
+            tempstates[11] = backi(cube);
+            checker(tempstates,key[cube]+1);//1632959     3265918
         }
-        cout<<"bfs 1 complete "<<count<<"\n";
+        cout<<"bfs complete "<<count<<"\n";
     }
-
-    void bfs2(){
-        string temp="xwxxxxggxxoobxbbxrrryyyy";   //wwwwggxgoooxbbxxrrxxyxxx        wwwwggggoooobbbbrrrryyyy
-        key[temp]="";
-        que.push(temp);
-        int i=1;
-        while (!que.empty()){
-            string cube=que.front();
-            que.pop();
-            string tmoves=key[cube];
-            left(cube,tmoves);
-            right(cube,tmoves);
-            up(cube,tmoves);
-            down(cube,tmoves);
-            front(cube,tmoves);
-            back(cube,tmoves);
-            lefti(cube,tmoves);
-            righti(cube,tmoves);
-            upi(cube,tmoves);
-            downi(cube,tmoves);
-            fronti(cube,tmoves);
-            backi(cube,tmoves);     //1632959
-        }
-        cout<<"bfs 2 complete "<<count;
+    int show(string c){
+        return key[c];
     }
 };
 
 int main(){
     rubiks_cube cube;
     cube.bfs1();
-    cube.bfs2();
+    string sub = cube.masker1("wyorwggbrbrrbggwwobyyooy");  //wyorwggbrbrrbggwwobyyooy   wwwwggggoooobbbbrrrryyyy
+    cout<<sub<<"\n";
+    cout<<cube.show(sub)<<"\n";
     return 0;
 }
